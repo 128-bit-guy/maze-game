@@ -2,6 +2,7 @@ from abc import ABC
 
 from MazeGrid import *
 from random import *
+from DSU import *
 
 
 class MazeGenerator:
@@ -62,7 +63,33 @@ class DFSMazeGenerator(ThinBasedMazeGenerator):
 class KruskalMazeGenerator(ThinBasedMazeGenerator):
 
     def generate(self, grid: MazeGrid):
-        pass
+        gw = (grid.get_width() + 1) // 2
+        gh = (grid.get_height() + 1) // 2
+        dsu = DSU(gw * gh)
+        av = []
+        bv = []
+        ex = []
+        ey = []
+        for i in range(gw):
+            for j in range(gh):
+                grid[i * 2, j * 2] = 0
+                for k in range(2):
+                    d = [0, 0]
+                    d[k] = 1
+                    ni = i + d[0]
+                    nj = j + d[1]
+                    if 0 <= ni < gw and 0 <= nj < gh:
+                        av.append(i + j * gw)
+                        bv.append(ni + nj * gh)
+                        ex.append(2 * i + d[0])
+                        ey.append(2 * j + d[1])
+        edg = [i for i in range(len(av))]
+        shuffle(edg)
+        for e in edg:
+            if not dsu.are_united(av[e], bv[e]):
+                dsu.unite(av[e], bv[e])
+                grid[ex[e], ey[e]] = 0
+
 
 
 class DSUMazeGenerator(MazeGenerator):
