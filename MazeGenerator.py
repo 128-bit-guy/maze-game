@@ -91,10 +91,61 @@ class KruskalMazeGenerator(ThinBasedMazeGenerator):
                 grid[ex[e], ey[e]] = 0
 
 
-
 class DSUMazeGenerator(MazeGenerator):
+    def __init__(self):
+        self.dx = [1, 0, -1, 0]
+        self.dy = [0, 1, 0, -1]
+
     def generate(self, grid: MazeGrid):
-        pass
+        dsu = DSU(grid.get_width() * grid.get_height())
+        vx = []
+        vy = []
+        for i in range(grid.get_width()):
+            for j in range(grid.get_height()):
+                vx.append(i)
+                vy.append(j)
+        verts = [i for i in range(grid.get_width() * grid.get_height())]
+        shuffle(verts)
+        for v in verts:
+            cx = vx[v]
+            cy = vy[v]
+            ccomps = set()
+            cen = 0
+            for i in range(4):
+                nx = cx + self.dx[i]
+                ny = cy + self.dy[i]
+                if 0 <= nx < grid.get_width() and 0 <= ny < grid.get_height() and grid[nx, ny] != 1:
+                    nv = nx * grid.get_height() + ny
+                    ccomps.add(dsu.get_component(nv))
+                    cen += 1
+            if len(ccomps) == cen:
+                grid[cx, cy] = 0
+                for i in range(4):
+                    nx = cx + self.dx[i]
+                    ny = cy + self.dy[i]
+                    if 0 <= nx < grid.get_width() and 0 <= ny < grid.get_height() and grid[nx, ny] != 1:
+                        nv = nx * grid.get_height() + ny
+                        dsu.unite(v, nv)
+        shuffle(verts)
+        for v in verts:
+            cx = vx[v]
+            cy = vy[v]
+            if grid[cx, cy] == 1:
+                ccomps = set()
+                for i in range(4):
+                    nx = cx + self.dx[i]
+                    ny = cy + self.dy[i]
+                    if 0 <= nx < grid.get_width() and 0 <= ny < grid.get_height() and grid[nx, ny] != 1:
+                        nv = nx * grid.get_height() + ny
+                        ccomps.add(dsu.get_component(nv))
+                if len(ccomps) > 1:
+                    grid[cx, cy] = 0
+                    for i in range(4):
+                        nx = cx + self.dx[i]
+                        ny = cy + self.dy[i]
+                        if 0 <= nx < grid.get_width() and 0 <= ny < grid.get_height() and grid[nx, ny] != 1:
+                            nv = nx * grid.get_height() + ny
+                            dsu.unite(v, nv)
 
 
 generators = [DFSMazeGenerator(), KruskalMazeGenerator(), DSUMazeGenerator()]
