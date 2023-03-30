@@ -12,6 +12,12 @@ class MazeGrid:
         i, j, = key
         self.grid[i][j] = value
 
+    def get_block_safe(self, i, j):
+        if 0 <= i < self.get_width() and 0 <= j < self.get_height():
+            return self[i, j]
+        else:
+            return 2
+
     def get_width(self):
         return len(self.grid)
 
