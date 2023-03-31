@@ -1,12 +1,15 @@
 from GridPrinter import *
 from MazeGenerator import *
 from MazeRenderer import *
+from random import *
 from pygame import *
 import pygame
 
 
 class MazeGame:
     def __init__(self):
+        self.px = None
+        self.py = None
         print("Enter width and height of maze")
         width, height = map(int, input().split())
         print("Enter maze generator")
@@ -27,8 +30,19 @@ class MazeGame:
 
         self.maze_renderer = MazeRenderer(self.grid)
 
-        self.px = 32
-        self.py = 32
+        self.spawn_player()
+
+    def spawn_player(self):
+        pxa = []
+        pya = []
+        for i in range(self.grid.get_width()):
+            for j in range(self.grid.get_height()):
+                if self.grid[i, j] == 0:
+                    pxa.append(i)
+                    pya.append(j)
+        x = randrange(len(pxa))
+        self.px = pxa[x] * 64 + 32
+        self.py = pya[x] * 64 + 32
 
     def check_collision(self):
         pbx = self.px // 64
