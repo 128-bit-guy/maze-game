@@ -85,6 +85,7 @@ class MazeGame:
             self.screen.fill((255, 255, 255))
             halfw = (self.screen.get_width() // 2)
             halfh = (self.screen.get_height() // 2)
+            self.grid.update_light(self.px // 64, self.py // 64)
             self.maze_renderer.render(halfw - self.px, halfh - self.py, self.px // 64, self.py // 64, self.screen)
             draw.circle(self.screen, (0, 0, 0), (halfw, halfh), self.player_radius)
             draw.circle(self.screen, (255, 255, 255), (halfw, halfh), self.player_radius - 2)
