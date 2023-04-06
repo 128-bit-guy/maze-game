@@ -1,5 +1,6 @@
 from collections import *
 
+
 class MazeGrid:
     def __init__(self, width, height, base_block):
         self.grid = [[]] * width
@@ -50,21 +51,18 @@ class MazeGrid:
             cx = x.pop()
             cy = y.pop()
             cd = d.pop()
-            if self.get_block_safe(cx, cy) == 0 and cd > 0 and self.get_light(cx, cy) < cd:
+            if self.get_block_safe(cx, cy) in [0, 3] and cd > 0 and self.get_light(cx, cy) < cd:
                 self.light_grid[cx][cy] = cd
                 for i in range(4):
                     x.append(cx + self.dx[i])
                     y.append(cy + self.dy[i])
                     d.append(cd - 1)
 
-
-
     def get_light(self, i, j):
         if 0 <= i < self.get_width() and 0 <= j < self.get_height():
             return self.light_grid[i][j]
         else:
             return 0
-
 
     def get_width(self):
         return len(self.grid)

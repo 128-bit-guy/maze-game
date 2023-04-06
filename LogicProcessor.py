@@ -17,6 +17,10 @@ class LogicProcessor:
 
         print(print_grid(self.grid))
 
+        self.notes = 0
+
+        self.note_callback = None
+
         self.spawn_player()
 
     def spawn_player(self):
@@ -37,7 +41,7 @@ class LogicProcessor:
 
         for i in range(pbx - 2, pbx + 3):
             for j in range(pby - 2, pby + 3):
-                if self.grid.get_block_safe(i, j) != 0:
+                if self.grid.get_block_safe(i, j) in [1, 2]:
                     br = Rect(i * 64 - self.px, j * 64 - self.py, 64, 64)
                     if br.colliderect(self.player_rect):
                         return True
@@ -60,3 +64,7 @@ class LogicProcessor:
         if key_state[K_d]:
             self.try_move(1, 0)
         self.grid.update_light(self.px // 64, self.py // 64)
+        if self.grid.get_block_safe(self.px // 64, self.py // 64) == 3:
+            self.grid[self.px // 64, self.py // 64] = 0
+            self.notes += 1
+            self.note_callback()

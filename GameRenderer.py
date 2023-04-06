@@ -1,12 +1,24 @@
+import pygame.font
+
+from LogicProcessor import *
 from MazeRenderer import *
 
 
 class GameRenderer:
-    def __init__(self, logic_processor):
+    def __init__(self, logic_processor: LogicProcessor):
         self.logic_processor = logic_processor
         self.maze_renderer = MazeRenderer(self.logic_processor.grid)
+        pygame.font.init()
+        self.font = pygame.font.SysFont(None, 64)
+        self.text_img = None
+        self.create_text_img()
+        self.logic_processor.note_callback = self.create_text_img
 
-    def render(self, screen):
+    def create_text_img(self):
+        self.text_img = self.font.render('Записок собрано: ' + str(self.logic_processor.notes) + ' из 16', True,
+                                         (255, 255, 255))
+
+    def render(self, screen: pygame.Surface):
         halfw = (screen.get_width() // 2)
         halfh = (screen.get_height() // 2)
         px = self.logic_processor.px
@@ -15,3 +27,4 @@ class GameRenderer:
         self.maze_renderer.render(halfw - px, halfh - py, px // 64, py // 64, screen)
         draw.circle(screen, (0, 0, 0), (halfw, halfh), player_radius)
         draw.circle(screen, (255, 255, 255), (halfw, halfh), player_radius - 2)
+        screen.blit(self.text_img, (0, 0))

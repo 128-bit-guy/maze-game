@@ -20,7 +20,22 @@ class MazeGenerator:
         height = self.grow_height(height)
         grid = MazeGrid(width, height, 1)
         self.generate(grid)
+        self.place_notes(grid)
         return grid
+
+    def place_notes(self, grid):
+        x = []
+        y = []
+        s = []
+        for i in range(grid.get_width()):
+            for j in range(grid.get_height()):
+                if grid[i, j] == 0:
+                    x.append(i)
+                    y.append(j)
+                    s.append(len(s))
+        shuffle(s)
+        for i in s[:16]:
+            grid[x[i], y[i]] = 3
 
 
 class ThinBasedMazeGenerator(MazeGenerator, ABC):
