@@ -95,7 +95,7 @@ class KruskalMazeGenerator(ThinBasedMazeGenerator):
                     nj = j + d[1]
                     if 0 <= ni < gw and 0 <= nj < gh:
                         av.append(i + j * gw)
-                        bv.append(ni + nj * gh)
+                        bv.append(ni + nj * gw)
                         ex.append(2 * i + d[0])
                         ey.append(2 * j + d[1])
         edg = [i for i in range(len(av))]

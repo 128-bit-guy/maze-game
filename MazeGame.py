@@ -2,17 +2,11 @@ from GameRenderer import GameRenderer
 from MazeRenderer import *
 from LogicProcessor import *
 import pygame
+from random import *
 
 
 class MazeGame:
     def __init__(self):
-        print("Enter width and height of maze")
-        width, height = map(int, input().split())
-        print("Enter maze generator")
-        for g in range(len(generators)):
-            print("#" + str(g + 1) + ": " + type(generators[g]).__name__)
-        i = int(input())
-        self.logic_processor = LogicProcessor(width, height, i - 1)
         init()
         pygame.font.init()
         self.clock = time.Clock()
@@ -20,7 +14,27 @@ class MazeGame:
         display.set_caption("Maze Game", "Maze Game")
         self.running = True
         self.font = pygame.font.SysFont(None, 64)
+        self.logic_processor = None
+        self.game_renderer = None
+        self.restart_ticks = 60
+        self.text_img = None
+        self.init_level()
+
+    def init_level(self):
+        width = randrange(20, 30)
+        height = randrange(20, 30)
+        i = randrange(0, 3)
+        self.logic_processor = LogicProcessor(width, height, i - 1)
         self.game_renderer = GameRenderer(self.logic_processor, self.font)
+
+    def update_and_render_pause(self):
+        halfw = ((self.screen.get_width()- self.text_img.get_width()) // 2)
+        halfh = ((self.screen.get_height() - self.text_img.get_height()) // 2)
+        self.screen.blit(self.text_img, (halfw, halfh))
+        self.restart_ticks -= 1
+        if self.restart_ticks == 0:
+            self.restart_ticks = 60
+            self.init_level()
 
     def run(self):
         while self.running:
@@ -34,19 +48,15 @@ class MazeGame:
             key_state = key.get_pressed()
             self.screen.fill((255, 255, 255))
             if self.logic_processor.won:
-                text_img = self.font.render('Победа',
+                self.text_img = self.font.render('Победа',
                                             True,
                                             (0, 0, 0))
-                halfw = ((self.screen.get_width()- text_img.get_width()) // 2)
-                halfh = ((self.screen.get_height() - text_img.get_height()) // 2)
-                self.screen.blit(text_img, (halfw, halfh))
+                self.update_and_render_pause()
             elif self.logic_processor.lost:
-                text_img = self.font.render('Поражение',
+                self.text_img = self.font.render('Поражение',
                                             True,
                                             (0, 0, 0))
-                halfw = ((self.screen.get_width()- text_img.get_width()) // 2)
-                halfh = ((self.screen.get_height() - text_img.get_height()) // 2)
-                self.screen.blit(text_img, (halfw, halfh))
+                self.update_and_render_pause()
             else:
                 self.logic_processor.update(key_state)
                 self.game_renderer.render(self.screen)
