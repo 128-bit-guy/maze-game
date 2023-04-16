@@ -5,11 +5,10 @@ from MazeRenderer import *
 
 
 class GameRenderer:
-    def __init__(self, logic_processor: LogicProcessor):
+    def __init__(self, logic_processor: LogicProcessor, font : pygame.font.Font):
         self.logic_processor = logic_processor
         self.maze_renderer = MazeRenderer(self.logic_processor.grid)
-        pygame.font.init()
-        self.font = pygame.font.SysFont(None, 64)
+        self.font = font
         self.text_img = None
         self.create_text_img()
         self.logic_processor.player.note_callback = self.create_text_img
