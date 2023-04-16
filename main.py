@@ -1,3 +1,4 @@
 from MazeGame import *
 
-MazeGame().run()
+if __name__ == "__main__":
+    MazeGame().run()
